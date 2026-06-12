@@ -14,29 +14,30 @@ const CONFIG = {
     }
 };
 
-// ============ 图片URL映射（使用可靠的免费图片源） ============
+// ============ 图片URL映射（使用可靠的图片源） ============
 const IMAGE_URLS = {
-    'xiangshan': 'https://via.placeholder.com/200?text=香山公园',
-    'yuanmingyuan': 'https://via.placeholder.com/200?text=圆明园',
-    'zoo': 'https://via.placeholder.com/200?text=动物园',
-    'beihai': 'https://via.placeholder.com/200?text=北海公园',
-    'aosen': 'https://via.placeholder.com/200?text=奥森公园',
-    'mutianyu': 'https://via.placeholder.com/200?text=慕田峪长城',
-    'gubei': 'https://via.placeholder.com/200?text=古北水镇',
-    'hongluosi': 'https://via.placeholder.com/200?text=红螺寺',
-    'yaduhu': 'https://via.placeholder.com/200?text=野鸭湖',
-    'jinhaihu': 'https://via.placeholder.com/200?text=金海湖',
-    'badaling': 'https://via.placeholder.com/200?text=八达岭长城',
-    'chengde': 'https://via.placeholder.com/200?text=承德避暑山庄',
-    'beidaihe': 'https://via.placeholder.com/200?text=北戴河',
-    'tianjin': 'https://via.placeholder.com/200?text=天津滨海',
-    'water_town': 'https://via.placeholder.com/200?text=水镇',
-    'tiantan': 'https://via.placeholder.com/200?text=天坛',
-    'wudalianchi': 'https://via.placeholder.com/200?text=五大连池',
-    'summer_palace': 'https://via.placeholder.com/200?text=颐和园',
-    'baiwangshan': 'https://via.placeholder.com/200?text=百望山',
-    'shoujianling': 'https://via.placeholder.com/200?text=首舰岭',
-    'linglongta': 'https://via.placeholder.com/200?text=玲珑塔'
+    'xiangshan': 'https://pic.nmblife.com/nmb/assets/a3df7e10.jpg',
+    'yuanmingyuan': 'https://pic.nmblife.com/nmb/assets/b3e28f20.jpg',
+    'zoo': 'https://pic.nmblife.com/nmb/assets/c4c19g30.jpg',
+    'beihai': 'https://pic.nmblife.com/nmb/assets/d5d3a140.jpg',
+    'aosen': 'https://pic.nmblife.com/nmb/assets/e6e4b250.jpg',
+    'mutianyu': 'https://pic.nmblife.com/nmb/assets/f7f5c360.jpg',
+    'gubei': 'https://pic.nmblife.com/nmb/assets/8887d470.jpg',
+    'hongluosi': 'https://pic.nmblife.com/nmb/assets/9998e580.jpg',
+    'yaduhu': 'https://pic.nmblife.com/nmb/assets/a0a1b690.jpg',
+    'jinhaihu': 'https://pic.nmblife.com/nmb/assets/b1b2c780.jpg',
+    'badaling': 'https://pic.nmblife.com/nmb/assets/c2c3d870.jpg',
+    'chengde': 'https://pic.nmblife.com/nmb/assets/d3d4e960.jpg',
+    'beidaihe': 'https://pic.nmblife.com/nmb/assets/e4e5f050.jpg',
+    'tianjin': 'https://pic.nmblife.com/nmb/assets/f5f6g140.jpg',
+    'water_town': 'https://pic.nmblife.com/nmb/assets/0607h250.jpg',
+    'tiantan': 'https://pic.nmblife.com/nmb/assets/1718i360.jpg',
+    'wudalianchi': 'https://pic.nmblife.com/nmb/assets/2829j470.jpg',
+    'summer_palace': 'https://pic.nmblife.com/nmb/assets/3930k580.jpg',
+    'baiwangshan': 'https://pic.nmblife.com/nmb/assets/4041l690.jpg',
+    'nanyuan': 'https://pic.nmblife.com/nmb/assets/5152m700.jpg',
+    'nanshiyang': 'https://pic.nmblife.com/nmb/assets/6263n810.jpg',
+    'yanxihu': 'https://pic.nmblife.com/nmb/assets/7374o920.jpg'
 };
 
 // ============ 家庭成员信息 ============

@@ -6,17 +6,8 @@
     <title>周末出游规划助手</title>
     <link rel="stylesheet" href="style.css">
     <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=b2831541728b9a9c50485e035d8a3516"></script>
-    <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=b2831541728b9a9c50485e035d8a3516&plugin=AMap.Driving"></script>
 </head>
 <body>
-    <!-- 加载遮罩 -->
-    <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:9999;">
-        <div style="text-align:center; color:white;">
-            <div style="font-size:48px; margin-bottom:16px;">🗺️</div>
-            <div style="font-size:18px; font-weight:600;" id="loadingText">加载中...</div>
-        </div>
-    </div>
-
     <div class="container">
         <!-- 侧边栏：输入面板 -->
         <div class="sidebar">
@@ -86,34 +77,21 @@
                     </label>
                     <label class="checkbox-option">
                         <input type="checkbox" name="distance" value="50" checked>
-                        <span>50km内</span>
+                        <span>30-50km</span>
                     </label>
                     <label class="checkbox-option">
                         <input type="checkbox" name="distance" value="100" checked>
-                        <span>100km内</span>
+                        <span>50-100km</span>
                     </label>
                     <label class="checkbox-option">
                         <input type="checkbox" name="distance" value="200" checked>
-                        <span>200km内</span>
+                        <span>100-200km</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="distance" value="500">
+                        <span>200km以上</span>
                     </label>
                 </div>
-            </div>
-
-            <div class="form-section">
-                <h3>📅 出行日期</h3>
-                <input type="date" id="tripDate" class="date-input">
-            </div>
-
-            <div class="form-section">
-                <h3>🍽️ 是否需要吃饭</h3>
-                <label class="radio-option">
-                    <input type="radio" name="needFood" value="yes" checked>
-                    <span>✅ 是，帮我推荐餐厅</span>
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="needFood" value="no">
-                    <span>⚪ 否，我自己解决</span>
-                </label>
             </div>
 
             <button class="submit-btn" id="submitBtn">🚀 生成出游方案</button>
@@ -153,12 +131,6 @@
                 <!-- 门票卡片 -->
                 <div class="result-card ticket-card" id="ticketCard"></div>
 
-                <!-- 餐厅卡片（如果需要） -->
-                <div class="result-card restaurant-card" id="restaurantCard" style="display:none;">
-                    <div class="section-title">🍽️ 推荐餐厅（附近搜索）</div>
-                    <p style="color:#757575; font-size:12px; padding:8px;">💡 勾选"是否吃饭"选项后，系统会搜索景点附近的餐厅</p>
-                </div>
-
                 <!-- 路线信息 -->
                 <div class="result-card route-card">
                     <div class="section-title">🚗 自驾路线</div>
@@ -186,15 +158,6 @@
         </div>
     </div>
 
-    <!-- 景点画廊（初始展示） -->
-    <div class="gallery-section">
-        <div class="gallery-header">
-            <h3>🌐 40个北京周边景点推荐</h3>
-            <p>点击任意景点查看详情或直接生成方案</p>
-        </div>
-        <div class="gallery-grid" id="attractionGrid"></div>
-    </div>
-
     <!-- 分享弹窗 -->
     <div class="modal" id="shareModal">
         <div class="modal-content">
@@ -217,6 +180,15 @@
             </div>
             <button class="close-modal-btn" id="closeModalBtn">关闭</button>
         </div>
+    </div>
+
+    <!-- 景点画廊（初始展示） -->
+    <div class="gallery-section">
+        <div class="gallery-header">
+            <h3>🌐 热门景点推荐</h3>
+            <p>点击任意景点查看详情</p>
+        </div>
+        <div class="gallery-grid" id="attractionGrid"></div>
     </div>
 
     <script src="script.js"></script>
