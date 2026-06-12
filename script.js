@@ -14,32 +14,6 @@ const CONFIG = {
     }
 };
 
-// ============ 图片URL映射（使用可靠的图片源） ============
-const IMAGE_URLS = {
-    'xiangshan': 'https://pic.nmblife.com/nmb/assets/a3df7e10.jpg',
-    'yuanmingyuan': 'https://pic.nmblife.com/nmb/assets/b3e28f20.jpg',
-    'zoo': 'https://pic.nmblife.com/nmb/assets/c4c19g30.jpg',
-    'beihai': 'https://pic.nmblife.com/nmb/assets/d5d3a140.jpg',
-    'aosen': 'https://pic.nmblife.com/nmb/assets/e6e4b250.jpg',
-    'mutianyu': 'https://pic.nmblife.com/nmb/assets/f7f5c360.jpg',
-    'gubei': 'https://pic.nmblife.com/nmb/assets/8887d470.jpg',
-    'hongluosi': 'https://pic.nmblife.com/nmb/assets/9998e580.jpg',
-    'yaduhu': 'https://pic.nmblife.com/nmb/assets/a0a1b690.jpg',
-    'jinhaihu': 'https://pic.nmblife.com/nmb/assets/b1b2c780.jpg',
-    'badaling': 'https://pic.nmblife.com/nmb/assets/c2c3d870.jpg',
-    'chengde': 'https://pic.nmblife.com/nmb/assets/d3d4e960.jpg',
-    'beidaihe': 'https://pic.nmblife.com/nmb/assets/e4e5f050.jpg',
-    'tianjin': 'https://pic.nmblife.com/nmb/assets/f5f6g140.jpg',
-    'water_town': 'https://pic.nmblife.com/nmb/assets/0607h250.jpg',
-    'tiantan': 'https://pic.nmblife.com/nmb/assets/1718i360.jpg',
-    'wudalianchi': 'https://pic.nmblife.com/nmb/assets/2829j470.jpg',
-    'summer_palace': 'https://pic.nmblife.com/nmb/assets/3930k580.jpg',
-    'baiwangshan': 'https://pic.nmblife.com/nmb/assets/4041l690.jpg',
-    'nanyuan': 'https://pic.nmblife.com/nmb/assets/5152m700.jpg',
-    'nanshiyang': 'https://pic.nmblife.com/nmb/assets/6263n810.jpg',
-    'yanxihu': 'https://pic.nmblife.com/nmb/assets/7374o920.jpg'
-};
-
 // ============ 家庭成员信息 ============
 const FAMILY_MEMBERS = [
     { id: 'me', name: '我', age: 31, type: 'adult', icon: '👨' },
@@ -73,7 +47,7 @@ const DESTINATIONS = [
         walkTime: 120,
         ticket: 10, ticketRule: 'free65',
         food: true,
-        image: IMAGE_URLS.beihai,
+        image: null,
         tags: ['皇家园林', '白塔', '划船']
     },
     {
@@ -88,7 +62,7 @@ const DESTINATIONS = [
         walkTime: 180,
         ticket: 15, ticketRule: 'half60',
         food: true,
-        image: IMAGE_URLS.zoo,
+        image: null,
         tags: ['熊猫', '亲子', '动物园']
     },
     {
@@ -103,7 +77,7 @@ const DESTINATIONS = [
         walkTime: 180,
         ticket: 0, ticketRule: 'free',
         food: true,
-        image: IMAGE_URLS.aosen,
+        image: null,
         tags: ['免费', '湿地', '骑行']
     },
     {
@@ -118,7 +92,7 @@ const DESTINATIONS = [
         walkTime: 180,
         ticket: 10, ticketRule: 'free65',
         food: true,
-        image: IMAGE_URLS.yuanmingyuan,
+        image: null,
         tags: ['历史', '遗址', '湖景']
     },
     {
@@ -133,7 +107,7 @@ const DESTINATIONS = [
         walkTime: 240,
         ticket: 30, ticketRule: 'free65',
         food: true,
-        image: IMAGE_URLS.summer_palace,
+        image: null,
         tags: ['世界遗产', '园林', '划船']
     },
     {
@@ -148,7 +122,7 @@ const DESTINATIONS = [
         walkTime: 240,
         ticket: 10, ticketRule: 'half60',
         food: true,
-        image: IMAGE_URLS.xiangshan,
+        image: null,
         tags: ['红叶', '古寺', '登山']
     },
     {
@@ -163,7 +137,7 @@ const DESTINATIONS = [
         walkTime: 180,
         ticket: 15, ticketRule: 'free65',
         food: true,
-        image: IMAGE_URLS.tiantan,
+        image: null,
         tags: ['世界遗产', '古建筑', '祭天']
     },
     {
@@ -178,7 +152,7 @@ const DESTINATIONS = [
         walkTime: 240,
         ticket: 40, ticketRule: 'half60',
         food: false,
-        image: IMAGE_URLS.baiwangshan,
+        image: null,
         tags: ['高山', '避暑', '索道']
     },
     {
@@ -193,7 +167,7 @@ const DESTINATIONS = [
         walkTime: 180,
         ticket: 10, ticketRule: 'free65',
         food: false,
-        image: IMAGE_URLS.baiwangshan,
+        image: null,
         tags: ['森林公园', '彩叶', '登山']
     },
     {
@@ -208,7 +182,7 @@ const DESTINATIONS = [
         walkTime: 120,
         ticket: 0, ticketRule: 'free',
         food: true,
-        image: IMAGE_URLS.shoujianling,
+        image: null,
         tags: ['免费', '绿道', '骑行']
     },
     {
@@ -223,7 +197,7 @@ const DESTINATIONS = [
         walkTime: 90,
         ticket: 0, ticketRule: 'free',
         food: true,
-        image: IMAGE_URLS.aosen,
+        image: null,
         tags: ['免费', '绿道', '跑步']
     },
     {
@@ -238,7 +212,7 @@ const DESTINATIONS = [
         walkTime: 120,
         ticket: 2, ticketRule: 'free65',
         food: true,
-        image: IMAGE_URLS.beihai,
+        image: null,
         tags: ['樱花', '划船', '湖景']
     },
     {
@@ -253,7 +227,7 @@ const DESTINATIONS = [
         walkTime: 60,
         ticket: 0, ticketRule: 'free',
         food: true,
-        image: IMAGE_URLS.beihai,
+        image: null,
         tags: ['免费', '湖景', '健身']
     },
     
@@ -270,7 +244,7 @@ const DESTINATIONS = [
         walkTime: 300,
         ticket: 45, ticketRule: 'half60',
         food: false,
-        image: IMAGE_URLS.mutianyu,
+        image: null,
         tags: ['长城', '缆车', '登山']
     },
     {
@@ -285,7 +259,7 @@ const DESTINATIONS = [
         walkTime: 300,
         ticket: 40, ticketRule: 'free65',
         food: true,
-        image: IMAGE_URLS.badaling,
+        image: null,
         tags: ['长城', '索道', '著名']
     },
     {
@@ -300,7 +274,7 @@ const DESTINATIONS = [
         walkTime: 360,
         ticket: 50, ticketRule: 'half60',
         food: true,
-        image: IMAGE_URLS.water_town,
+        image: null,
         tags: ['山水', '竹筏', '攀岩']
     },
     {
@@ -315,7 +289,7 @@ const DESTINATIONS = [
         walkTime: 240,
         ticket: 30, ticketRule: 'free65',
         food: false,
-        image: IMAGE_URLS.yaduhu,
+        image: null,
         tags: ['湿地', '观鸟', '骑行']
     },
     {
@@ -330,7 +304,7 @@ const DESTINATIONS = [
         walkTime: 180,
         ticket: 54, ticketRule: 'half60',
         food: false,
-        image: IMAGE_URLS.hongluosi,
+        image: null,
         tags: ['寺庙', '银杏', '红叶']
     },
     {
@@ -345,7 +319,7 @@ const DESTINATIONS = [
         walkTime: 360,
         ticket: 150, ticketRule: 'half60',
         food: true,
-        image: IMAGE_URLS.gubei,
+        image: null,
         tags: ['古建筑', '夜景', '温泉']
     },
     {
@@ -360,7 +334,7 @@ const DESTINATIONS = [
         walkTime: 240,
         ticket: 40, ticketRule: 'half60',
         food: true,
-        image: IMAGE_URLS.jinhaihu,
+        image: null,
         tags: ['湖泊', '游船', '露营']
     },
     {
@@ -375,7 +349,7 @@ const DESTINATIONS = [
         walkTime: 240,
         ticket: 60, ticketRule: 'half60',
         food: false,
-        image: IMAGE_URLS.jinhaihu,
+        image: null,
         tags: ['峡谷', '攀岩', '缆车']
     },
     {
@@ -390,7 +364,7 @@ const DESTINATIONS = [
         walkTime: 180,
         ticket: 200, ticketRule: 'full',
         food: true,
-        image: IMAGE_URLS.jinhaihu,
+        image: null,
         tags: ['滑雪', '冬季', '运动']
     },
     {
@@ -405,7 +379,7 @@ const DESTINATIONS = [
         walkTime: 180,
         ticket: 55, ticketRule: 'free65',
         food: true,
-        image: IMAGE_URLS.jinhaihu,
+        image: null,
         tags: ['湖泊', '游船', '风景']
     },
     {
@@ -420,7 +394,7 @@ const DESTINATIONS = [
         walkTime: 240,
         ticket: 35, ticketRule: 'free65',
         food: false,
-        image: IMAGE_URLS.baiwangshan,
+        image: null,
         tags: ['自然', '森林', '生态']
     },
     
@@ -437,7 +411,7 @@ const DESTINATIONS = [
         walkTime: 300,
         ticket: 45, ticketRule: 'free65',
         food: true,
-        image: IMAGE_URLS.hongluosi,
+        image: null,
         tags: ['历史', '陵寝', '神道']
     },
     {
@@ -452,7 +426,7 @@ const DESTINATIONS = [
         walkTime: 180,
         ticket: 30, ticketRule: 'free65',
         food: false,
-        image: IMAGE_URLS.tiantan,
+        image: null,
         tags: ['寺庙', '石经', '古塔']
     },
     {
@@ -467,7 +441,7 @@ const DESTINATIONS = [
         walkTime: 240,
         ticket: 40, ticketRule: 'half60',
         food: false,
-        image: IMAGE_URLS.water_town,
+        image: null,
         tags: ['瀑布', '峡谷', '探险']
     },
     {
@@ -482,7 +456,7 @@ const DESTINATIONS = [
         walkTime: 180,
         ticket: 15, ticketRule: 'free65',
         food: false,
-        image: IMAGE_URLS.baiwangshan,
+        image: null,
         tags: ['登山', '观景', '休闲']
     },
     
@@ -499,7 +473,7 @@ const DESTINATIONS = [
         walkTime: 240,
         ticket: 0, ticketRule: 'free',
         food: true,
-        image: IMAGE_URLS.tianjin,
+        image: null,
         tags: ['摩天轮', '意式', '海鲜']
     },
     {
@@ -514,7 +488,7 @@ const DESTINATIONS = [
         walkTime: 240,
         ticket: 100, ticketRule: 'half60',
         food: true,
-        image: IMAGE_URLS.beidaihe,
+        image: null,
         tags: ['海滩', '避暑', '亲子']
     },
     {
@@ -529,7 +503,7 @@ const DESTINATIONS = [
         walkTime: 360,
         ticket: 145, ticketRule: 'free65',
         food: true,
-        image: IMAGE_URLS.chengde,
+        image: null,
         tags: ['世界遗产', '园林', '湖泊']
     },
     {
@@ -544,7 +518,7 @@ const DESTINATIONS = [
         walkTime: 180,
         ticket: 0, ticketRule: 'free',
         food: true,
-        image: IMAGE_URLS.gubei,
+        image: null,
         tags: ['古城', '历史', '观光']
     },
     {
@@ -559,7 +533,7 @@ const DESTINATIONS = [
         walkTime: 180,
         ticket: 50, ticketRule: 'half60',
         food: true,
-        image: IMAGE_URLS.beidaihe,
+        image: null,
         tags: ['海滩', '度假', '休闲']
     },
     {
@@ -574,7 +548,7 @@ const DESTINATIONS = [
         walkTime: 120,
         ticket: 30, ticketRule: 'free65',
         food: true,
-        image: IMAGE_URLS.tiantan,
+        image: null,
         tags: ['历史', '文化', '文物']
     }
 ];
