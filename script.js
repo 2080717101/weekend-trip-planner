@@ -14,31 +14,29 @@ const CONFIG = {
     }
 };
 
-// ============ 图片URL映射 ============
+// ============ 图片URL映射（使用可靠的免费图片源） ============
 const IMAGE_URLS = {
-    'xiangshan': 'https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=200&h=200&fit=crop',
-    'yuanmingyuan': 'https://images.unsplash.com/photo-1455152613078-f99981bc4fe8?w=200&h=200&fit=crop',
-    'zoo': 'https://images.unsplash.com/photo-1578295794402-899e449c2d91?w=200&h=200&fit=crop',
-    'beihai': 'https://images.unsplash.com/photo-1509345528210-b3f55637f686?w=200&h=200&fit=crop',
-    'aosen': 'https://images.unsplash.com/photo-1441260038675-7687b6c865cc?w=200&h=200&fit=crop',
-    'mutianyu': 'https://images.unsplash.com/photo-1529957967711-0ff10842b301?w=200&h=200&fit=crop',
-    'gubei': 'https://images.unsplash.com/photo-1513635340053-767941925c25?w=200&h=200&fit=crop',
-    'hongluosi': 'https://images.unsplash.com/photo-1529957967711-0ff10842b301?w=200&h=200&fit=crop',
-    'yaduhu': 'https://images.unsplash.com/photo-1518709268805-4e9042af5980?w=200&h=200&fit=crop',
-    'jinhaihu': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop',
-    'badaling': 'https://images.unsplash.com/photo-1529957967711-0ff10842b301?w=200&h=200&fit=crop',
-    'chengde': 'https://images.unsplash.com/photo-1479839672679-a46483c55307?w=200&h=200&fit=crop',
-    'beidaihe': 'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=200&h=200&fit=crop',
-    'tianjin': 'https://images.unsplash.com/photo-1454194162632-ab8c07249763?w=200&h=200&fit=crop',
-    'water_town': 'https://images.unsplash.com/photo-1513635340053-767941925c25?w=200&h=200&fit=crop',
-    'tiantan': 'https://images.unsplash.com/photo-1443807887506-33564788c29b?w=200&h=200&fit=crop',
-    'wudalianchi': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop',
-    'summer_palace': 'https://images.unsplash.com/photo-1479839672679-a46483c55307?w=200&h=200&fit=crop',
-    'baiwangshan': 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=200&h=200&fit=crop',
-    'shoujianling': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop',
-    'linglongta': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop',
-    'baiwangshan2': 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=200&h=200&fit=crop',
-    'linglongta2': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop'
+    'xiangshan': 'https://via.placeholder.com/200?text=香山公园',
+    'yuanmingyuan': 'https://via.placeholder.com/200?text=圆明园',
+    'zoo': 'https://via.placeholder.com/200?text=动物园',
+    'beihai': 'https://via.placeholder.com/200?text=北海公园',
+    'aosen': 'https://via.placeholder.com/200?text=奥森公园',
+    'mutianyu': 'https://via.placeholder.com/200?text=慕田峪长城',
+    'gubei': 'https://via.placeholder.com/200?text=古北水镇',
+    'hongluosi': 'https://via.placeholder.com/200?text=红螺寺',
+    'yaduhu': 'https://via.placeholder.com/200?text=野鸭湖',
+    'jinhaihu': 'https://via.placeholder.com/200?text=金海湖',
+    'badaling': 'https://via.placeholder.com/200?text=八达岭长城',
+    'chengde': 'https://via.placeholder.com/200?text=承德避暑山庄',
+    'beidaihe': 'https://via.placeholder.com/200?text=北戴河',
+    'tianjin': 'https://via.placeholder.com/200?text=天津滨海',
+    'water_town': 'https://via.placeholder.com/200?text=水镇',
+    'tiantan': 'https://via.placeholder.com/200?text=天坛',
+    'wudalianchi': 'https://via.placeholder.com/200?text=五大连池',
+    'summer_palace': 'https://via.placeholder.com/200?text=颐和园',
+    'baiwangshan': 'https://via.placeholder.com/200?text=百望山',
+    'shoujianling': 'https://via.placeholder.com/200?text=首舰岭',
+    'linglongta': 'https://via.placeholder.com/200?text=玲珑塔'
 };
 
 // ============ 家庭成员信息 ============
@@ -878,16 +876,6 @@ async function updateMapWithRoute(destination, startLocation) {
         });
         destinationMarker.setMap(map);
         markers.push(destinationMarker);
-        
-        // 添加文字标签（景点名称）
-        const labelMarker = new AMap.Marker({
-            position: new AMap.LngLat(destination.lng, destination.lat),
-            title: destination.name,
-            content: `<div style="background:#333; color:#fff; padding:4px 8px; border-radius:4px; font-size:12px; white-space:nowrap; margin-top:8px;">${destination.name}</div>`,
-            offset: new AMap.Pixel(-40, 40)
-        });
-        labelMarker.setMap(map);
-        markers.push(labelMarker);
         
         // 路线规划
         try {
