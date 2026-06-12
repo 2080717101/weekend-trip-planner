@@ -595,19 +595,24 @@ function init() {
 }
 
 function initMap() {
-    map = new AMap.Map('map', {
-        center: new AMap.LngLat(116.35, 39.91),
-        zoom: 11,
-        mapStyle: 'amap://styles/normal'
-    });
-    
-    // 添加两家标记
-    addMarker(CONFIG.userHome.lng, CONFIG.userHome.lat, CONFIG.userHome.name, 'home');
-    addMarker(CONFIG.parentsHome.lng, CONFIG.parentsHome.lat, CONFIG.parentsHome.name, 'parents');
-    
-    setTimeout(() => {
-        map.setFitView(markers, true, [50, 50, 50, 50]);
-    }, 300);
+    try {
+        map = new AMap.Map('map', {
+            center: new AMap.LngLat(116.35, 39.91),
+            zoom: 11,
+            mapStyle: 'amap://styles/normal'
+        });
+        
+        // 添加两家标记
+        addMarker(CONFIG.userHome.lng, CONFIG.userHome.lat, CONFIG.userHome.name, 'home');
+        addMarker(CONFIG.parentsHome.lng, CONFIG.parentsHome.lat, CONFIG.parentsHome.name, 'parents');
+        
+        setTimeout(() => {
+            map.setFitView(markers, true, [50, 50, 50, 50]);
+        }, 300);
+    } catch (error) {
+        console.error('地图初始化失败:', error);
+        document.getElementById('map').innerHTML = '<div style="display:flex; align-items:center; justify-content:center; height:100%; color:#999;">地图加载失败，请刷新页面重试</div>';
+    }
 }
 
 function setupEventListeners() {
@@ -775,6 +780,11 @@ async function generateTripPlan() {
         // 更新地图
         await updateMapWithRoute(currentUserChoice.currentDestination, startLocation);
         
+        // 如果需要吃饭，搜索餐厅
+        if (inputs.needFood) {
+            await searchNearbyRestaurants(currentUserChoice.currentDestination);
+        }
+        
         // 显示结果
         displayResults(currentUserChoice);
         
@@ -783,6 +793,39 @@ async function generateTripPlan() {
         alert(error.message || '生成方案失败，请重试');
     } finally {
         showLoading(false);
+    }
+}
+
+// ============ 餐厅搜索（高德POI） ============
+async function searchNearbyRestaurants(destination) {
+    const API_KEY = 'b2831541728b9a9c50485e035d8a3516';
+    
+    try {
+        // 搜索附近餐厅，半径2公里，按距离排序
+        const response = await fetch(
+            `https://restapi.amap.com/v3/place/around?key=${API_KEY}&location=${destination.lng},${destination.lat}&keywords=餐厅&radius=2000&types=050000&sortrule=distance&page_size=5`
+        );
+        
+        const data = await response.json();
+        
+        if (data.status === '1' && data.pois && data.pois.length > 0) {
+            // 保存餐厅信息
+            currentUserChoice.restaurants = data.pois.map(poi => ({
+                name: poi.name,
+                address: poi.address || '附近',
+                distance: poi.distance ? Math.round(poi.distance / 1000 * 10) / 10 + 'km' : '附近',
+                tel: poi.tel || '暂无电话',
+                type: poi.type || '餐厅'
+            }));
+            
+            console.log('🍽️ 找到餐厅:', currentUserChoice.restaurants);
+        } else {
+            currentUserChoice.restaurants = [];
+            console.log('未找到附近餐厅');
+        }
+    } catch (error) {
+        console.error('餐厅搜索失败:', error);
+        currentUserChoice.restaurants = [];
     }
 }
 
@@ -951,6 +994,25 @@ function displayResults(choice) {
             ${ticketRows}
         </div>
     `;
+    
+    // 餐厅信息（如果有）
+    if (choice.restaurants && choice.restaurants.length > 0) {
+        const restaurantRows = choice.restaurants.map(r => `
+            <div class="restaurant-row">
+                <div class="restaurant-name">🍽️ ${r.name}</div>
+                <div class="restaurant-rating">🚶 ${r.distance}</div>
+                <div class="restaurant-address">📍 ${r.address}</div>
+            </div>
+        `).join('');
+        
+        document.getElementById('restaurantCard').innerHTML = `
+            <div class="section-title">🍽️ 附近餐厅推荐</div>
+            ${restaurantRows}
+        `;
+        document.getElementById('restaurantCard').style.display = 'block';
+    } else {
+        document.getElementById('restaurantCard').style.display = 'none';
+    }
     
     // 景点切换信息
     document.getElementById('destinationNav').style.display = 'flex';
