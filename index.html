@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>周末出游规划助手</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=b2831541728b9a9c50485e035d8a3516"></script>
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=b2831541728b9a9c50485e035d8a3516&plugin=AMap.Driving"></script>
+</head>
+<body>
+    <!-- 加载遮罩 -->
+    <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:9999;">
+        <div style="text-align:center; color:white;">
+            <div style="font-size:48px; margin-bottom:16px;">🗺️</div>
+            <div style="font-size:18px; font-weight:600;" id="loadingText">加载中...</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 侧边栏：输入面板 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>🗺️ 周末出游规划</h1>
+                <p class="subtitle">为家人找到最合适的景点</p>
+            </div>
+
+            <div class="form-section">
+                <h3>👥 出游人数</h3>
+                <div class="input-group">
+                    <input type="number" id="peopleCount" value="4" min="1" max="10">
+                    <span class="input-label">人</span>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>🥾 地形偏好</h3>
+                <label class="radio-option">
+                    <input type="radio" name="terrain" value="flat" checked>
+                    <span>✅ 要求平路（老人/儿童友好）</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="terrain" value="any">
+                    <span>⚪ 不限地形</span>
+                </label>
+            </div>
+
+            <div class="form-section">
+                <h3>📅 出行类型</h3>
+                <label class="radio-option">
+                    <input type="radio" name="tripType" value="daytrip" checked>
+                    <span>✅ 当天往返</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="tripType" value="overnight">
+                    <span>⚪ 多日游</span>
+                </label>
+            </div>
+
+            <div class="form-section">
+                <h3>🏠 出发地点</h3>
+                <label class="radio-option">
+                    <input type="radio" name="startPoint" value="myHome" checked>
+                    <span>🏠 我的家（昌平龙华园）</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="startPoint" value="parentsHome">
+                    <span>🏠 父母家（西城广内大街）</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="startPoint" value="custom">
+                    <span>✏️ 自定义地址</span>
+                </label>
+            </div>
+
+            <div class="form-section custom-address" id="customAddressSection" style="display:none;">
+                <input type="text" id="customAddress" placeholder="请输入地址，如：北京市朝阳区xxx">
+            </div>
+
+            <div class="form-section">
+                <h3>🚗 驾车距离</h3>
+                <div class="distance-options">
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="distance" value="30">
+                        <span>30km内</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="distance" value="50" checked>
+                        <span>50km内</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="distance" value="100" checked>
+                        <span>100km内</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="distance" value="200" checked>
+                        <span>200km内</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>🍽️ 是否需要吃饭</h3>
+                <label class="radio-option">
+                    <input type="radio" name="needFood" value="yes" checked>
+                    <span>✅ 是，帮我推荐餐厅</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="needFood" value="no">
+                    <span>⚪ 否，我自己解决</span>
+                </label>
+            </div>
+
+            <button class="submit-btn" id="submitBtn">🚀 生成出游方案</button>
+
+            <div class="info-box">
+                <p>💡 家庭成员：您和对象（31岁，全价），爸爸（62年生，64岁，半价），妈妈（60年生，69岁，大部分景点免费）</p>
+            </div>
+        </div>
+
+        <!-- 主区域：地图和结果展示 -->
+        <div class="main-content">
+            <div class="map-container">
+                <div id="map" class="map"></div>
+                <div class="map-controls">
+                    <button id="fitBoundsBtn" class="map-btn">📍 调整视图</button>
+                    <button id="clearBtn" class="map-btn">🗑️ 清除标记</button>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <!-- 景点卡片 -->
+                <div class="result-card attraction-card" id="attractionCard">
+                    <img src="" alt="">
+                    <div class="attraction-info">
+                        <h3>加载中...</h3>
+                        <p class="attraction-address"></p>
+                    </div>
+                </div>
+
+                <!-- 门票卡片 -->
+                <div class="result-card ticket-card" id="ticketCard"></div>
+
+                <!-- 餐厅卡片 -->
+                <div class="result-card restaurant-card" id="restaurantCard" style="display:none;"></div>
+
+                <!-- 路线信息 -->
+                <div class="result-card route-card">
+                    <div class="section-title">🚗 自驾路线</div>
+                    <div id="routeInfo" class="route-info">
+                        <div class="route-item">
+                            <span class="route-label">预计时间</span>
+                            <span class="route-value">--</span>
+                        </div>
+                        <div class="route-item">
+                            <span class="route-label">驾车距离</span>
+                            <span class="route-value">--</span>
+                        </div>
+                        <div class="route-item">
+                            <span class="route-label">停车场</span>
+                            <span class="route-value">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div class="action-section">
+                    <button class="share-btn" id="shareBtn">📤 分享给朋友</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 分享弹窗 -->
+    <div class="modal" id="shareModal">
+        <div class="modal-content">
+            <h3>📤 分享方案</h3>
+            <div class="share-methods">
+                <div class="share-method">
+                    <h4>📋 复制链接</h4>
+                    <div class="share-url-box">
+                        <input type="text" id="shareUrl" readonly>
+                        <button id="copyUrlBtn">复制</button>
+                    </div>
+                </div>
+                <div class="share-method">
+                    <h4>📱 复制文本</h4>
+                    <div class="share-text-box">
+                        <textarea id="shareText" readonly></textarea>
+                        <button id="copyTextBtn">复制</button>
+                    </div>
+                </div>
+            </div>
+            <button class="close-modal-btn" id="closeModalBtn">关闭</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

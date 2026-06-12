@@ -1,0 +1,822 @@
+// ============ 配置信息 ============
+const CONFIG = {
+    userHome: {
+        name: '我的家',
+        address: '北京市昌平区龙华园一区',
+        lat: 40.2479,
+        lng: 116.2318
+    },
+    parentsHome: {
+        name: '父母家',
+        address: '北京市西城区广内大街200号楼',
+        lat: 39.8998,
+        lng: 116.3789
+    }
+};
+
+// ============ 图片URL映射（使用Unsplash免费图床） ============
+const IMAGE_URLS = {
+    'xiangshan': 'https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=200&h=200&fit=crop',
+    'yuanmingyuan': 'https://images.unsplash.com/photo-1455152613078-f99981bc4fe8?w=200&h=200&fit=crop',
+    'zoo': 'https://images.unsplash.com/photo-1578295794402-899e449c2d91?w=200&h=200&fit=crop',
+    'beihai': 'https://images.unsplash.com/photo-1509345528210-b3f55637f686?w=200&h=200&fit=crop',
+    'aosen': 'https://images.unsplash.com/photo-1441260038675-7687b6c865cc?w=200&h=200&fit=crop',
+    'mutianyu': 'https://images.unsplash.com/photo-1529957967711-0ff10842b301?w=200&h=200&fit=crop',
+    'gubei': 'https://images.unsplash.com/photo-1513635340053-767941925c25?w=200&h=200&fit=crop',
+    'hongluosi': 'https://images.unsplash.com/photo-1529957967711-0ff10842b301?w=200&h=200&fit=crop',
+    'yaduhu': 'https://images.unsplash.com/photo-1518709268805-4e9042af5980?w=200&h=200&fit=crop',
+    'jinhaihu': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop',
+    'badaling': 'https://images.unsplash.com/photo-1529957967711-0ff10842b301?w=200&h=200&fit=crop',
+    'chengde': 'https://images.unsplash.com/photo-1479839672679-a46483c55307?w=200&h=200&fit=crop',
+    'beidaihe': 'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=200&h=200&fit=crop',
+    'tianjin': 'https://images.unsplash.com/photo-1454194162632-ab8c07249763?w=200&h=200&fit=crop',
+    'water_town': 'https://images.unsplash.com/photo-1513635340053-767941925c25?w=200&h=200&fit=crop',
+    'tiantan': 'https://images.unsplash.com/photo-1443807887506-33564788c29b?w=200&h=200&fit=crop',
+    'wudalianchi': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop',
+    'summer_palace': 'https://images.unsplash.com/photo-1479839672679-a46483c55307?w=200&h=200&fit=crop'
+};
+
+// ============ 家庭成员信息 ============
+// 父亲64岁（1962年生）- 很多景点半价
+// 母亲69岁（1960年生）- 很多景点65+免费
+const FAMILY_MEMBERS = [
+    { id: 'me', name: '我', age: 31, type: 'adult', icon: '👨' },
+    { id: 'spouse', name: '对象', age: 31, type: 'adult', icon: '👩' },
+    { id: 'father', name: '爸爸', age: 62, type: 'senior', icon: '👴' },  // 实际64岁，写62是按出生年份
+    { id: 'mother', name: '妈妈', age: 64, type: 'senior', icon: '👵' }   // 实际69岁
+];
+
+// ============ 票价规则 ============
+// 不同景点对老人/儿童的优惠政策不同
+const TICKET_RULES = {
+    'free65': { age: 65, price: 0, note: '65岁以上免费' },      // 65+免费
+    'half60': { age: 60, discount: 0.5, note: '60岁以上半价' }, // 60+半价
+    'half18': { age: 18, discount: 0.5, note: '18岁以下半价' }, // 18岁以下半价
+    'freeChild': { age: 6, price: 0, note: '6岁以下免费' },      // 6岁以下免费
+    'student': { studentOnly: true, discount: 0.5, note: '学生证半价' },
+    'full': { note: '全价' }
+};
+
+// ============ 景点数据库（完整版） ============
+const DESTINATIONS = [
+    // ===== 30公里内 - 市区 =====
+    {
+        name: '香山公园',
+        address: '北京市海淀区香山买卖街40号',
+        lat: 39.9942, lng: 116.1841,
+        distance: 25, terrain: 'any', suitableFor: [2, 4, 6, 8, 10],
+        highlights: '国家4A级景区，秋季红叶最佳观赏地，适合登山锻炼',
+        parking: '香山公园南门停车场（约¥10/小时）',
+        walkRoute: '南门 → 香炉峰 → 蜡梅谷 → 和平门 → 返回南门',
+        ticket: 10,  // 全价10元
+        ticketRule: 'half60',
+        food: true,  // 有餐饮
+        image: IMAGE_URLS.xiangshan,
+        tags: ['红叶', '古寺', '登山']
+    },
+    {
+        name: '颐和园',
+        address: '北京市海淀区新建宫门路19号',
+        lat: 39.9994, lng: 116.2721,
+        distance: 28, terrain: 'flat', suitableFor: [2, 4, 6, 8, 10],
+        highlights: '世界文化遗产，皇家园林，昆明湖泛舟，万寿山登高',
+        parking: '颐和园新建宫门停车场（约¥15/小时）',
+        walkRoute: '新建宫门 → 仁寿殿 → 乐寿堂 → 长廊 → 昆明湖 → 返回',
+        ticket: 30, ticketRule: 'free65',
+        food: true,
+        image: IMAGE_URLS.summer_palace,
+        tags: ['世界遗产', '园林', '划船']
+    },
+    {
+        name: '圆明园',
+        address: '北京市海淀区清华西路28号',
+        lat: 39.9994, lng: 116.2687,
+        distance: 28, terrain: 'flat', suitableFor: [2, 4, 6, 8, 10],
+        highlights: '历史遗址公园，湖光山色，适合散步休闲',
+        parking: '圆明园东门停车场（约¥10/小时）',
+        walkRoute: '东门 → 大水法 → 远瀛观遗址 → 福海 → 返回东门',
+        ticket: 10, ticketRule: 'free65',
+        food: true,
+        image: IMAGE_URLS.yuanmingyuan,
+        tags: ['历史', '遗址', '湖景']
+    },
+    {
+        name: '北京动物园',
+        address: '北京市西城区西直门外大街2号',
+        lat: 39.9483, lng: 116.3466,
+        distance: 5, terrain: 'flat', suitableFor: [2, 4, 6],
+        highlights: '国家级动物园，熊猫馆、海洋馆必打卡，亲子首选',
+        parking: '北京动物园南门停车场（约¥15/小时）',
+        walkRoute: '南门 → 熊猫馆 → 猴山 → 海洋馆 → 东北虎馆 → 返回南门',
+        ticket: 15, ticketRule: 'half60',
+        food: true,
+        image: IMAGE_URLS.zoo,
+        tags: ['熊猫', '亲子', '动物园']
+    },
+    {
+        name: '北海公园',
+        address: '北京市西城区文津街1号',
+        lat: 39.9222, lng: 116.3729,
+        distance: 4, terrain: 'flat', suitableFor: [2, 4, 6, 8, 10],
+        highlights: '皇家园林，白塔寺，湖心泛舟，老人小孩都适合',
+        parking: '北海公园南门停车场（约¥10/小时）',
+        walkRoute: '南门 → 团城 → 白塔 → 五龙亭 → 返回南门',
+        ticket: 10, ticketRule: 'free65',
+        food: true,
+        image: IMAGE_URLS.beihai,
+        tags: ['皇家园林', '白塔', '划船']
+    },
+    {
+        name: '奥林匹克森林公园',
+        address: '北京市朝阳区北辰东路',
+        lat: 39.9715, lng: 116.3892,
+        distance: 15, terrain: 'flat', suitableFor: [2, 4, 6, 8, 10],
+        highlights: '北京最大城市公园，湿地景观，适合骑行散步，野餐露营',
+        parking: '奥森南门停车场（约¥5/小时）',
+        walkRoute: '南门 → 湿地 → 健身步道 → 北门观景台 → 返回南门',
+        ticket: 0, ticketRule: 'free',
+        food: true,
+        image: IMAGE_URLS.aosen,
+        tags: ['免费', '湿地', '骑行']
+    },
+    
+    // ===== 50公里内 - 郊区 =====
+    {
+        name: '慕田峪长城',
+        address: '北京市怀柔区渤海镇',
+        lat: 40.4392, lng: 116.6497,
+        distance: 60, terrain: 'any', suitableFor: [2, 4],
+        highlights: '北京最值得游览的长城段，游客相对较少，可以坐缆车',
+        parking: '慕田峪长城游客中心停车场（约¥20/次）',
+        walkRoute: '游客中心 → 乘缆车到14号敌楼 → 步行至好汉坡 → 原路返回',
+        ticket: 45, ticketRule: 'half60',
+        food: false,
+        image: IMAGE_URLS.mutianyu,
+        tags: ['长城', '缆车', '登山']
+    },
+    {
+        name: '古北水镇',
+        address: '北京市密云区古北口镇司马台村',
+        lat: 40.4394, lng: 117.1766,
+        distance: 110, terrain: 'flat', suitableFor: [2, 4, 6],
+        highlights: '北方乌镇，古建筑群，夜景绝美，可泡温泉，适合过夜游',
+        parking: '古北水镇游客中心停车场（约¥20/次）',
+        walkRoute: '游客中心 → 乘车进镇 → 汤河老街 → 日月岛广场 → 返程',
+        ticket: 150, ticketRule: 'half60',
+        food: true,
+        image: IMAGE_URLS.gubei,
+        tags: ['古建筑', '夜景', '温泉']
+    },
+    {
+        name: '十渡风景区',
+        address: '北京市房山区十渡镇',
+        lat: 39.7054, lng: 115.7849,
+        distance: 80, terrain: 'any', suitableFor: [2, 4, 6],
+        highlights: '北京西部长沟风景区，山水景观，可划竹筏、攀岩',
+        parking: '十渡风景区游客中心停车场（约¥10/次）',
+        walkRoute: '游客中心 → 乘竹筏游拒马河 → 游览溶洞 → 返回',
+        ticket: 50, ticketRule: 'half60',
+        food: true,
+        image: IMAGE_URLS.water_town,
+        tags: ['山水', '竹筏', '攀岩']
+    },
+    {
+        name: '野鸭湖湿地公园',
+        address: '北京市延庆区康庄镇刘浩营村北',
+        lat: 40.1381, lng: 116.3889,
+        distance: 80, terrain: 'flat', suitableFor: [2, 4, 6, 8, 10],
+        highlights: '北京最大湿地公园，观鸟圣地，适合骑行和徒步，老人小孩皆宜',
+        parking: '野鸭湖湿地公园南门停车场（约¥10/次）',
+        walkRoute: '南门 → 湿地观鸟栈道 → 骑行环湖 → 返回南门',
+        ticket: 30, ticketRule: 'free65',
+        food: false,
+        image: IMAGE_URLS.yaduhu,
+        tags: ['湿地', '观鸟', '骑行']
+    },
+    {
+        name: '红螺寺',
+        address: '北京市怀柔区怀北镇红螺东路2号',
+        lat: 40.3721, lng: 116.6072,
+        distance: 55, terrain: 'any', suitableFor: [2, 4, 6],
+        highlights: '千年古刹，参天银杏，可乘缆车，秋季红叶最佳',
+        parking: '红螺寺停车场（约¥10/小时）',
+        walkRoute: '山门 → 大雄宝殿 → 五百罗汉林 → 原路返回',
+        ticket: 54, ticketRule: 'half60',
+        food: false,
+        image: IMAGE_URLS.hongluosi,
+        tags: ['寺庙', '银杏', '红叶']
+    },
+    {
+        name: '金海湖',
+        address: '北京市平谷区金海湖镇海子村',
+        lat: 40.1064, lng: 117.1429,
+        distance: 100, terrain: 'flat', suitableFor: [2, 4, 6, 8, 10],
+        highlights: '北京最大的人工湖，可游船、钓鱼、露营，休闲度假首选',
+        parking: '金海湖游客中心停车场（约¥15/次）',
+        walkRoute: '游客中心 → 游船码头 → 环湖步道 → 返回',
+        ticket: 40, ticketRule: 'half60',
+        food: true,
+        image: IMAGE_URLS.jinhaihu,
+        tags: ['湖泊', '游船', '露营']
+    },
+    
+    // ===== 100公里内 - 远郊 =====
+    {
+        name: '八达岭长城',
+        address: '北京市延庆区G6京藏高速58号出口',
+        lat: 40.3522, lng: 116.0156,
+        distance: 70, terrain: 'any', suitableFor: [2, 4],
+        highlights: '长城最著名段落，八达岭索道可选，交通便利',
+        parking: '八达岭长城游客中心停车场（约¥20/次）',
+        walkRoute: '游客中心 → 乘缆车/索道 → 北峰观景 → 南峰长城 → 返回',
+        ticket: 40, ticketRule: 'free65',
+        food: true,
+        image: IMAGE_URLS.badaling,
+        tags: ['长城', '索道', '著名']
+    },
+    {
+        name: '明十三陵',
+        address: '北京市昌平区长陵镇长陵',
+        lat: 40.2413, lng: 116.2232,
+        distance: 10, terrain: 'flat', suitableFor: [2, 4, 6, 8, 10],
+        highlights: '明清皇家陵寝群，历史底蕴深厚，适合自驾游',
+        parking: '明十三陵长陵停车场（约¥10/次）',
+        walkRoute: '长陵 → 定陵 → 昭陵 → 神道 → 返回',
+        ticket: 45, ticketRule: 'free65',
+        food: true,
+        image: IMAGE_URLS.hongluosi,
+        tags: ['历史', '陵寝', '神道']
+    },
+    {
+        name: '云居寺',
+        address: '北京市房山区石窝镇',
+        lat: 39.7462, lng: 115.9063,
+        distance: 70, terrain: 'flat', suitableFor: [2, 4, 6],
+        highlights: '千年古刹，石经文化，古塔林立，清静幽雅',
+        parking: '云居寺游客中心停车场（约¥10/次）',
+        walkRoute: '游客中心 → 下寺 → 上寺 → 石经地宫 → 返回',
+        ticket: 30, ticketRule: 'free65',
+        food: false,
+        image: IMAGE_URLS.tiantan,
+        tags: ['寺庙', '石经', '古塔']
+    },
+    {
+        name: '青龙峡',
+        address: '北京市怀柔区怀北镇',
+        lat: 40.4016, lng: 116.6634,
+        distance: 58, terrain: 'any', suitableFor: [2, 4],
+        highlights: '山峡奇观，可划船、攀岩、缆车，挑战性强',
+        parking: '青龙峡游客中心停车场（约¥15/次）',
+        walkRoute: '游客中心 → 乘船游湖 → 山顶缆车 → 步行下山 → 返回',
+        ticket: 60, ticketRule: 'half60',
+        food: false,
+        image: IMAGE_URLS.wudalianchi,
+        tags: ['峡谷', '攀岩', '缆车']
+    },
+    
+    // ===== 200公里内 - 跨城 =====
+    {
+        name: '天津滨海新区',
+        address: '天津市滨海新区',
+        lat: 38.9801, lng: 117.7003,
+        distance: 140, terrain: 'flat', suitableFor: [2, 4, 6, 8, 10],
+        highlights: '天津之眼摩天轮，意式风情区，海鲜美食，适合家庭出游',
+        parking: '意式风情区停车场（约¥10/小时）',
+        walkRoute: '意式风情区 → 五大道 → 海河游船 → 返回',
+        ticket: 0, ticketRule: 'free',
+        food: true,
+        image: IMAGE_URLS.tianjin,
+        tags: ['摩天轮', '意式', '海鲜']
+    },
+    {
+        name: '北戴河',
+        address: '河北省秦皇岛市北戴河区',
+        lat: 39.9394, lng: 119.6251,
+        distance: 280, terrain: 'flat', suitableFor: [2, 4, 6, 8, 10],
+        highlights: '海滨度假胜地，海滩浴场，夏季避暑首选，适合亲子游',
+        parking: '老虎石公园停车场（约¥10/小时）',
+        walkRoute: '老虎石公园 → 海滩浴场 → 鸽子窝公园 → 返回',
+        ticket: 100, ticketRule: 'half60',
+        food: true,
+        image: IMAGE_URLS.beidaihe,
+        tags: ['海滩', '避暑', '亲子']
+    },
+    {
+        name: '承德避暑山庄',
+        address: '河北省承德市双桥区普宁路28号',
+        lat: 40.9076, lng: 117.9201,
+        distance: 260, terrain: 'flat', suitableFor: [2, 4, 6],
+        highlights: '世界文化遗产，皇家园林，需多日游',
+        parking: '避暑山庄丽正门停车场（约¥15/次）',
+        walkRoute: '丽正门 → 湖区 → 平原区 → 山区 → 返回',
+        ticket: 145, ticketRule: 'free65',
+        food: true,
+        image: IMAGE_URLS.chengde,
+        tags: ['世界遗产', '园林', '湖泊']
+    }
+];
+
+// ============ 全局变量 ============
+let map = null;
+let markers = [];
+let polyline = null;
+let currentUserChoice = null;
+
+// ============ 初始化 ============
+function init() {
+    console.log('🚀 初始化周末出游规划助手...');
+    
+    // 初始化地图
+    initMap();
+    
+    // 绑定事件
+    setupEventListeners();
+    
+    // 默认显示前6个景点的图片网格
+    displayAttractionGrid(DESTINATIONS.slice(0, 6));
+}
+
+function initMap() {
+    map = new AMap.Map('map', {
+        center: new AMap.LngLat(116.35, 39.91),
+        zoom: 11,
+        mapStyle: 'amap://styles/normal'
+    });
+    
+    // 添加两家标记
+    addMarker(CONFIG.userHome.lng, CONFIG.userHome.lat, CONFIG.userHome.name, 'home');
+    addMarker(CONFIG.parentsHome.lng, CONFIG.parentsHome.lat, CONFIG.parentsHome.name, 'parents');
+    
+    // 调整视野
+    setTimeout(() => {
+        map.setFitView(markers, true, [50, 50, 50, 50]);
+    }, 300);
+}
+
+function setupEventListeners() {
+    // 出发点变化 → 显示/隐藏自定义地址输入框
+    document.querySelectorAll('input[name="startPoint"]').forEach(r => {
+        r.addEventListener('change', (e) => {
+            document.getElementById('customAddressSection').style.display = 
+                e.target.value === 'custom' ? 'block' : 'none';
+        });
+    });
+    
+    // 是否吃饭变化 → 显示/隐藏餐厅信息区域
+    document.querySelectorAll('input[name="needFood"]').forEach(r => {
+        r.addEventListener('change', (e) => {
+            document.getElementById('foodSection').style.display = 
+                e.target.checked ? 'block' : 'none';
+        });
+    });
+    
+    // 生成方案按钮
+    document.getElementById('submitBtn').addEventListener('click', generateTripPlan);
+    
+    // 地图控制按钮
+    document.getElementById('fitBoundsBtn').addEventListener('click', () => {
+        map.setFitView(markers, true, [50, 50, 50, 50]);
+    });
+    
+    document.getElementById('clearBtn').addEventListener('click', () => {
+        markers = [];
+        polyline = null;
+        document.getElementById('map').innerHTML = '';
+        initMap();
+    });
+    
+    // 分享按钮
+    document.getElementById('shareBtn').addEventListener('click', openShareModal);
+    document.getElementById('closeModalBtn').addEventListener('click', closeShareModal);
+    document.getElementById('copyUrlBtn').addEventListener('click', () => copyToClipboard(document.getElementById('shareUrl').value, '分享链接'));
+    document.getElementById('copyTextBtn').addEventListener('click', () => copyToClipboard(document.getElementById('shareText').value, '分享文本'));
+}
+
+// ============ 获取用户输入 ============
+function getUserInputs() {
+    const peopleCount = parseInt(document.getElementById('peopleCount').value) || 4;
+    const terrain = document.querySelector('input[name="terrain"]:checked').value;
+    const tripType = document.querySelector('input[name="tripType"]:checked').value;
+    const startPoint = document.querySelector('input[name="startPoint"]:checked').value;
+    const customAddress = document.getElementById('customAddress').value;
+    const needFood = document.querySelector('input[name="needFood"]:checked').value === 'yes';
+    const distanceOptions = Array.from(document.querySelectorAll('input[name="distance"]:checked'))
+        .map(cb => parseInt(cb.value))
+        .sort();
+    
+    return { peopleCount, terrain, tripType, startPoint, customAddress, needFood, distanceOptions };
+}
+
+// ============ 景点筛选 ============
+function filterDestinations(distanceOptions, terrain, peopleCount) {
+    const maxDistance = Math.max(...distanceOptions);
+    
+    return DESTINATIONS.filter(d => {
+        // 距离筛选
+        if (d.distance > maxDistance) return false;
+        // 地形筛选（平路要求）
+        if (terrain === 'flat' && d.terrain !== 'flat') return false;
+        // 人数筛选
+        if (!d.suitableFor.includes(peopleCount)) return false;
+        return true;
+    });
+}
+
+// ============ 选择最佳目的地 ============
+function findBestDestination(destinations, startLocation) {
+    let best = null;
+    let minScore = Infinity;
+    
+    destinations.forEach(d => {
+        // 距离用户家
+        const dist1 = haversineDistance(startLocation.lat, startLocation.lng, d.lat, d.lng);
+        // 距离父母家
+        const dist2 = haversineDistance(CONFIG.parentsHome.lat, CONFIG.parentsHome.lng, d.lat, d.lng);
+        // 平均距离越小越好
+        const score = (dist1 + dist2) / 2;
+        
+        if (score < minScore) {
+            minScore = score;
+            best = d;
+        }
+    });
+    
+    return best;
+}
+
+function haversineDistance(lat1, lng1, lat2, lng2) {
+    const R = 6371;
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLng = ((lng2 - lng1) * Math.PI) / 180;
+    const a = Math.sin(dLat/2)**2 + Math.cos((lat1*Math.PI)/180) * Math.cos((lat2*Math.PI)/180) * Math.sin(dLng/2)**2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+// ============ 门票计算 ============
+function calculateTickets(destination) {
+    const details = [];
+    let totalPrice = 0;
+    
+    FAMILY_MEMBERS.forEach(m => {
+        let price = destination.ticket;
+        let type = 'full';
+        let note = '全价';
+        
+        if (price === 0) {
+            type = 'free';
+            note = '免费';
+        } else {
+            const rule = TICKET_RULES[destination.ticketRule];
+            
+            // 65岁以上免费
+            if (destination.ticketRule === 'free65' && m.age >= 65) {
+                price = 0;
+                type = 'free';
+                note = '65+免费';
+            }
+            // 60岁以上半价
+            else if (destination.ticketRule === 'half60' && m.age >= 60) {
+                price = Math.ceil(price * 0.5);
+                type = 'discount';
+                note = '60+半价';
+            }
+            // 景点本身免费
+            else if (destination.ticketRule === 'free') {
+                price = 0;
+                type = 'free';
+                note = '免费';
+            }
+        }
+        
+        details.push({
+            member: m,
+            price,
+            type,
+            note
+        });
+        totalPrice += price;
+    });
+    
+    return { details, totalPrice };
+}
+
+// ============ 餐厅搜索（使用高德POI） ============
+async function searchRestaurants(destination, needFood) {
+    if (!needFood) return [];
+    
+    return new Promise((resolve) => {
+        // 使用高德POI搜索
+        const marker = new AMap.Marker({
+            map: map,
+            position: new AMap.LngLat(destination.lng, destination.lat)
+        });
+        
+        // 这里模拟餐厅数据，实际应该调用高德API
+        const mockRestaurants = [
+            {
+                name: `${destination.name}附近餐厅1`,
+                address: '距景点约500米',
+                rating: 4.6,
+                avgPrice: 60,
+                distance: 0.5
+            },
+            {
+                name: `${destination.name}附近餐厅2`,
+                address: '距景点约800米',
+                rating: 4.4,
+                avgPrice: 45,
+                distance: 0.8
+            }
+        ];
+        
+        resolve(mockRestaurants);
+        marker.setMap(null);
+    });
+}
+
+// ============ 生成方案 ============
+async function generateTripPlan() {
+    const inputs = getUserInputs();
+    const startLocation = getStartLocation(inputs);
+    
+    console.log('📍 用户输入:', inputs);
+    console.log('📍 出发点:', startLocation);
+    
+    // 显示加载状态
+    showLoading(true, '正在为您规划出游方案...');
+    
+    try {
+        // 1. 筛选景点
+        let candidates = filterDestinations(inputs.distanceOptions, inputs.terrain, inputs.peopleCount);
+        
+        if (candidates.length === 0) {
+            throw new Error('没有找到符合条件的目的地，请调整筛选条件');
+        }
+        
+        // 2. 选择最佳目的地
+        const destination = findBestDestination(candidates, startLocation);
+        
+        // 3. 计算门票
+        const ticketInfo = calculateTickets(destination);
+        
+        // 4. 搜索餐厅
+        const restaurants = await searchRestaurants(destination, inputs.needFood);
+        
+        // 5. 保存结果
+        currentUserChoice = {
+            inputs,
+            startLocation,
+            destination,
+            ticketInfo,
+            restaurants
+        };
+        
+        // 6. 更新地图
+        await updateMapWithRoute(destination, startLocation);
+        
+        // 7. 显示结果
+        displayResults(currentUserChoice);
+        
+    } catch (error) {
+        console.error('❌ 生成方案失败:', error);
+        alert(error.message || '生成方案失败，请重试');
+    } finally {
+        showLoading(false);
+    }
+}
+
+function getStartLocation(inputs) {
+    if (inputs.startPoint === 'myHome') return CONFIG.userHome;
+    if (inputs.startPoint === 'parentsHome') return CONFIG.parentsHome;
+    
+    // 自定义地址
+    if (inputs.customAddress) {
+        return {
+            name: '自定义地址',
+            address: inputs.customAddress,
+            lat: CONFIG.userHome.lat,  // 简化处理
+            lng: CONFIG.userHome.lng
+        };
+    }
+    
+    return CONFIG.userHome;
+}
+
+// ============ 地图更新 ============
+async function updateMapWithRoute(destination, startLocation) {
+    // 清除之前的路线
+    if (polyline) {
+        polyline.setMap(null);
+        polyline = null;
+    }
+    
+    // 添加目的地标记
+    addMarker(destination.lng, destination.lat, destination.name, 'destination');
+    
+    // 添加起点标记
+    addMarker(startLocation.lng, startLocation.lat, startLocation.name, 'start');
+    
+    // 路线规划
+    try {
+        const driving = new AMap.Driving();
+        driving.search(
+            new AMap.LngLat(startLocation.lng, startLocation.lat),
+            new AMap.LngLat(destination.lng, destination.lat),
+            (status, result) => {
+                if (status === 'complete' && result.routes.length) {
+                    const path = result.routes[0].paths[0].steps.map(s => s.latLng);
+                    polyline = new AMap.Polyline({
+                        path,
+                        strokeColor: '#1976d2',
+                        strokeWeight: 6,
+                        strokeOpacity: 0.8
+                    });
+                    polyline.setMap(map);
+                    
+                    // 显示路线信息
+                    const duration = Math.round(result.routes[0].duration / 60);
+                    const distance = Math.round(result.routes[0].distance / 1000);
+                    document.getElementById('routeInfo').innerHTML = `
+                        <div class="route-item">
+                            <span class="route-label">预计时间</span>
+                            <span class="route-value">${duration}分钟</span>
+                        </div>
+                        <div class="route-item">
+                            <span class="route-label">驾车距离</span>
+                            <span class="route-value">${distance}公里</span>
+                        </div>
+                        <div class="route-item">
+                            <span class="route-label">停车场</span>
+                            <span class="route-value">${destination.parking}</span>
+                        </div>
+                    `;
+                }
+            }
+        );
+    } catch (e) {
+        console.error('路线规划失败:', e);
+    }
+    
+    // 调整视野
+    setTimeout(() => {
+        map.setZoomAndCenter(12, new AMap.LngLat(destination.lng, destination.lat));
+    }, 300);
+}
+
+// ============ 显示结果 ============
+function displayResults(choice) {
+    const { destination, ticketInfo, restaurants, inputs } = choice;
+    
+    // 景点信息卡片
+    document.getElementById('attractionCard').innerHTML = `
+        <img src="${destination.image}" alt="${destination.name}" onerror="this.style.display='none'">
+        <div class="attraction-info">
+            <h3>${destination.name}</h3>
+            <p class="attraction-address">📍 ${destination.address}</p>
+            <div class="attraction-tags">
+                ${destination.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+            </div>
+            <p class="attraction-highlights">${destination.highlights}</p>
+            <p class="attraction-route"><strong>推荐路线：</strong>${destination.walkRoute}</p>
+        </div>
+    `;
+    
+    // 门票信息卡片
+    const ticketRows = ticketInfo.details.map(d => {
+        const typeClass = d.type === 'free' ? 'free' : d.type === 'discount' ? 'discount' : 'full';
+        return `
+            <div class="ticket-row">
+                <div class="member-icon">${d.member.icon}</div>
+                <div class="member-name">${d.member.name}</div>
+                <div class="ticket-type ${typeClass}">${d.note}</div>
+                <div class="ticket-price">¥${d.price}</div>
+            </div>
+        `;
+    }).join('');
+    
+    document.getElementById('ticketCard').innerHTML = `
+        <div class="ticket-header">
+            <span>🎫 门票费用明细</span>
+            <span class="ticket-total">共 ¥${ticketInfo.totalPrice}</span>
+        </div>
+        <div class="ticket-body">
+            ${ticketRows}
+        </div>
+    `;
+    
+    // 餐厅信息（如果有）
+    if (inputs.needFood && restaurants.length > 0) {
+        const restaurantRows = restaurants.map(r => `
+            <div class="restaurant-row">
+                <div class="restaurant-name">🍽️ ${r.name}</div>
+                <div class="restaurant-rating">⭐ ${r.rating}分</div>
+                <div class="restaurant-price">¥${r.avgPrice}/人</div>
+                <div class="restaurant-distance">🚶 ${r.distance}km</div>
+            </div>
+        `).join('');
+        
+        document.getElementById('restaurantCard').innerHTML = `
+            <div class="section-title">🍽️ 推荐餐厅</div>
+            ${restaurantRows}
+        `;
+        document.getElementById('restaurantCard').style.display = 'block';
+    } else {
+        document.getElementById('restaurantCard').style.display = 'none';
+    }
+    
+    // 更新分享内容
+    updateShareContent(choice);
+    
+    // 隐藏加载状态
+    showLoading(false);
+}
+
+// ============ 添加地图标记 ============
+function addMarker(lng, lat, title, type) {
+    const icons = {
+        home: 'https://webapi.amap.com/images/markers/mark_bs.png',
+        parents: 'https://webapi.amap.com/images/markers/mark_bs.png',
+        start: 'https://webapi.amap.com/images/markers/mark_blue.png',
+        destination: 'https://webapi.amap.com/images/markers/mark_red.png'
+    };
+    
+    const marker = new AMap.Marker({
+        position: new AMap.LngLat(lng, lat),
+        title,
+        icon: icons[type] || icons.destination,
+        offset: new AMap.Pixel(-12, -36)
+    });
+    
+    marker.setMap(map);
+    markers.push(marker);
+}
+
+// ============ 显示景点网格 ============
+function displayAttractionGrid(destinations) {
+    const grid = document.getElementById('attractionGrid');
+    grid.innerHTML = destinations.map(d => `
+        <div class="mini-card">
+            <img src="${d.image}" alt="${d.name}" onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
+            <div class="mini-name">${d.name}</div>
+            <div class="mini-tags">
+                ${d.tags.slice(0, 2).map(t => `<span>${t}</span>`).join('')}
+            </div>
+            <div class="mini-ticket">¥${d.ticket}/人</div>
+        </div>
+    `).join('');
+}
+
+// ============ 显示加载状态 ============
+function showLoading(show, message = '加载中...') {
+    const overlay = document.getElementById('loadingOverlay');
+    overlay.style.display = show ? 'flex' : 'none';
+    document.getElementById('loadingText').textContent = message;
+}
+
+// ============ 更新分享内容 ============
+function updateShareContent(choice) {
+    const { destination, ticketInfo, inputs } = choice;
+    
+    const shareText = `【周末出游方案】
+出发地点：${choice.startLocation.name}
+推荐目的地：${destination.name}
+地址：${destination.address}
+门票费用：共¥${ticketInfo.totalPrice}
+
+${inputs.needFood ? '推荐餐厅：\n' + choice.restaurants.map(r => `- ${r.name} ⭐${r.rating} ¥${r.avgPrice}/人`).join('\n') + '\n' : ''}
+
+推荐路线：
+${destination.walkRoute}
+
+停车场：${destination.parking}
+
+祝您玩得愉快！🎉`;
+    
+    document.getElementById('shareText').value = shareText;
+    document.getElementById('shareUrl').value = window.location.href;
+}
+
+// ============ 分享弹窗 ============
+function openShareModal() {
+    if (!currentUserChoice) {
+        alert('请先生成出游方案');
+        return;
+    }
+    document.getElementById('shareModal').classList.add('show');
+}
+
+function closeShareModal() {
+    document.getElementById('shareModal').classList.remove('show');
+}
+
+function copyToClipboard(text, label) {
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = event.target;
+        const original = btn.textContent;
+        btn.textContent = '✓ 已复制';
+        setTimeout(() => btn.textContent = original, 1500);
+    });
+}
+
+// ============ 页面加载 ============
+document.addEventListener('DOMContentLoaded', init);
