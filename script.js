@@ -638,7 +638,7 @@ function getUserInputs() {
     const tripType = document.querySelector('input[name="tripType"]:checked').value;
     const startPoint = document.querySelector('input[name="startPoint"]:checked').value;
     const customAddress = document.getElementById('customAddress').value;
-    const needFood = document.querySelector('input[name="needFood"]:checked').value === 'yes';
+    const needFood = false;
     const distanceOptions = Array.from(document.querySelectorAll('input[name="distance"]:checked'))
         .map(cb => parseInt(cb.value))
         .sort();
@@ -754,11 +754,6 @@ async function generateTripPlan() {
         
         // 更新地图
         await updateMapWithRoute(currentUserChoice.currentDestination, startLocation);
-        
-        // 如果需要吃饭，搜索餐厅
-        if (inputs.needFood) {
-            await searchNearbyRestaurants(currentUserChoice.currentDestination);
-        }
         
         // 显示结果
         displayResults(currentUserChoice);
@@ -991,24 +986,7 @@ function displayResults(choice) {
         </div>
     `;
     
-    // 餐厅信息（如果有）
-    if (choice.restaurants && choice.restaurants.length > 0) {
-        const restaurantRows = choice.restaurants.map(r => `
-            <div class="restaurant-row">
-                <div class="restaurant-name">🍽️ ${r.name}</div>
-                <div class="restaurant-rating">🚶 ${r.distance}</div>
-                <div class="restaurant-address">📍 ${r.address}</div>
-            </div>
-        `).join('');
-        
-        document.getElementById('restaurantCard').innerHTML = `
-            <div class="section-title">🍽️ 附近餐厅推荐</div>
-            ${restaurantRows}
-        `;
-        document.getElementById('restaurantCard').style.display = 'block';
-    } else {
-        document.getElementById('restaurantCard').style.display = 'none';
-    }
+    // 餐厅推荐已禁用
     
     // 景点切换信息
     document.getElementById('destinationNav').style.display = 'flex';
