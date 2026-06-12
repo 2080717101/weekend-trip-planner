@@ -1206,4 +1206,15 @@ function copyToClipboard(text, label) {
 }
 
 // ============ 页面加载 ============
+function init() {
+    console.log('🚀 初始化周末出游规划助手...');
+    
+    // 延迟初始化，确保DOM完全加载
+    setTimeout(() => {
+        initMap();
+        setupEventListeners();
+        displayAttractionGallery();
+    }, 100);
+}
+
 document.addEventListener('DOMContentLoaded', init);
