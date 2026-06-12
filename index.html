@@ -100,6 +100,11 @@
             </div>
 
             <div class="form-section">
+                <h3>📅 出行日期</h3>
+                <input type="date" id="tripDate" class="date-input">
+            </div>
+
+            <div class="form-section">
                 <h3>🍽️ 是否需要吃饭</h3>
                 <label class="radio-option">
                     <input type="radio" name="needFood" value="yes" checked>
@@ -128,7 +133,14 @@
                 </div>
             </div>
 
-            <div class="results-section">
+            <div class="results-section" id="resultsSection">
+                <!-- 景点切换 -->
+                <div class="destination-nav" id="destinationNav" style="display:none;">
+                    <button id="prevBtn" class="nav-btn">⬅️ 上一个</button>
+                    <span id="destinationCount" class="destination-count"></span>
+                    <button id="nextBtn" class="nav-btn">下一个 ➡️</button>
+                </div>
+
                 <!-- 景点卡片 -->
                 <div class="result-card attraction-card" id="attractionCard">
                     <img src="" alt="">
@@ -141,8 +153,11 @@
                 <!-- 门票卡片 -->
                 <div class="result-card ticket-card" id="ticketCard"></div>
 
-                <!-- 餐厅卡片 -->
-                <div class="result-card restaurant-card" id="restaurantCard" style="display:none;"></div>
+                <!-- 餐厅卡片（如果需要） -->
+                <div class="result-card restaurant-card" id="restaurantCard" style="display:none;">
+                    <div class="section-title">🍽️ 推荐餐厅（附近搜索）</div>
+                    <p style="color:#757575; font-size:12px; padding:8px;">💡 勾选"是否吃饭"选项后，系统会搜索景点附近的餐厅</p>
+                </div>
 
                 <!-- 路线信息 -->
                 <div class="result-card route-card">
@@ -169,6 +184,15 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- 景点画廊（初始展示） -->
+    <div class="gallery-section">
+        <div class="gallery-header">
+            <h3>🌐 40个北京周边景点推荐</h3>
+            <p>点击任意景点查看详情或直接生成方案</p>
+        </div>
+        <div class="gallery-grid" id="attractionGrid"></div>
     </div>
 
     <!-- 分享弹窗 -->

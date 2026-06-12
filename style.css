@@ -292,6 +292,11 @@ body {
     line-height: 1.4;
 }
 
+.attraction-route strong {
+    color: #1976d2;
+    font-weight: 600;
+}
+
 /* 门票卡片 */
 .ticket-card {
     display: flex;
