@@ -36,7 +36,9 @@ const IMAGE_URLS = {
     'summer_palace': 'https://images.unsplash.com/photo-1479839672679-a46483c55307?w=200&h=200&fit=crop',
     'baiwangshan': 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=200&h=200&fit=crop',
     'shoujianling': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop',
-    'linglongta': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop'
+    'linglongta': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop',
+    'baiwangshan2': 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=200&h=200&fit=crop',
+    'linglongta2': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop'
 };
 
 // ============ 家庭成员信息 ============
@@ -856,82 +858,113 @@ async function updateMapWithRoute(destination, startLocation) {
     markers.forEach(m => m.setMap(null));
     markers = [];
     
-    // 添加标记
-    addMarker(destination.lng, destination.lat, destination.name, 'destination');
-    addMarker(startLocation.lng, startLocation.lat, startLocation.name, 'start');
-    
-    // 路线规划
     try {
-        const driving = new AMap.Driving();
-        driving.search(
-            new AMap.LngLat(startLocation.lng, startLocation.lat),
-            new AMap.LngLat(destination.lng, destination.lat),
-            (status, result) => {
-                if (status === 'complete' && result.routes.length) {
-                    const path = result.routes[0].paths[0].steps.map(s => s.latLng);
-                    polyline = new AMap.Polyline({
-                        path,
-                        strokeColor: '#1976d2',
-                        strokeWeight: 6,
-                        strokeOpacity: 0.8
-                    });
-                    polyline.setMap(map);
-                    
-                    // 显示路线信息
-                    const duration = Math.round(result.routes[0].duration / 60);
-                    const distance = Math.round(result.routes[0].distance / 1000);
-                    
-                    document.getElementById('routeInfo').innerHTML = `
-                        <div class="route-item">
-                            <span class="route-label">预计时间</span>
-                            <span class="route-value">${duration}分钟</span>
-                        </div>
-                        <div class="route-item">
-                            <span class="route-label">驾车距离</span>
-                            <span class="route-value">${distance}公里</span>
-                        </div>
-                        <div class="route-item">
-                            <span class="route-label">停车场</span>
-                            <span class="route-value">${destination.parking}</span>
-                        </div>
-                    `;
-                } else {
-                    // 使用直线距离
-                    const straightDist = Math.round(haversineDistance(startLocation.lat, startLocation.lng, destination.lat, destination.lng) * 10) / 10;
-                    const approxTime = Math.round(straightDist * 2);
-                    
-                    document.getElementById('routeInfo').innerHTML = `
-                        <div class="route-item">
-                            <span class="route-label">预计时间</span>
-                            <span class="route-value">约${approxTime}分钟</span>
-                        </div>
-                        <div class="route-item">
-                            <span class="route-label">直线距离</span>
-                            <span class="route-value">${straightDist}公里</span>
-                        </div>
-                        <div class="route-item">
-                            <span class="route-label">停车场</span>
-                            <span class="route-value">${destination.parking}</span>
-                        </div>
-                    `;
+        // 添加起点标记（蓝色）
+        const startMarker = new AMap.Marker({
+            position: new AMap.LngLat(startLocation.lng, startLocation.lat),
+            title: startLocation.name,
+            icon: 'https://webapi.amap.com/theme/v1.3/markers/base/mark_bule.png',
+            offset: new AMap.Pixel(-12, -36)
+        });
+        startMarker.setMap(map);
+        markers.push(startMarker);
+        
+        // 添加景点标记（红色，带文字）
+        const destinationMarker = new AMap.Marker({
+            position: new AMap.LngLat(destination.lng, destination.lat),
+            title: destination.name,
+            icon: 'https://webapi.amap.com/theme/v1.3/markers/base/mark_red.png',
+            offset: new AMap.Pixel(-16, -36)
+        });
+        destinationMarker.setMap(map);
+        markers.push(destinationMarker);
+        
+        // 添加文字标签（景点名称）
+        const labelMarker = new AMap.Marker({
+            position: new AMap.LngLat(destination.lng, destination.lat),
+            title: destination.name,
+            content: `<div style="background:#333; color:#fff; padding:4px 8px; border-radius:4px; font-size:12px; white-space:nowrap; margin-top:8px;">${destination.name}</div>`,
+            offset: new AMap.Pixel(-40, 40)
+        });
+        labelMarker.setMap(map);
+        markers.push(labelMarker);
+        
+        // 路线规划
+        try {
+            const driving = new AMap.Driving();
+            driving.search(
+                new AMap.LngLat(startLocation.lng, startLocation.lat),
+                new AMap.LngLat(destination.lng, destination.lat),
+                (status, result) => {
+                    if (status === 'complete' && result.routes && result.routes.length > 0) {
+                        const path = result.routes[0].paths[0].steps.map(s => s.latLng);
+                        polyline = new AMap.Polyline({
+                            path,
+                            strokeColor: '#1976d2',
+                            strokeWeight: 6,
+                            strokeOpacity: 0.8
+                        });
+                        polyline.setMap(map);
+                        
+                        // 显示路线信息
+                        const duration = Math.round(result.routes[0].duration / 60);
+                        const distance = Math.round(result.routes[0].distance / 1000);
+                        
+                        document.getElementById('routeInfo').innerHTML = `
+                            <div class="route-item">
+                                <span class="route-label">预计时间</span>
+                                <span class="route-value">${duration}分钟</span>
+                            </div>
+                            <div class="route-item">
+                                <span class="route-label">驾车距离</span>
+                                <span class="route-value">${distance}公里</span>
+                            </div>
+                            <div class="route-item">
+                                <span class="route-label">停车场</span>
+                                <span class="route-value">${destination.parking}</span>
+                            </div>
+                        `;
+                    } else {
+                        // 使用直线距离
+                        const straightDist = Math.round(haversineDistance(startLocation.lat, startLocation.lng, destination.lat, destination.lng) * 10) / 10;
+                        const approxTime = Math.round(straightDist * 2);
+                        
+                        document.getElementById('routeInfo').innerHTML = `
+                            <div class="route-item">
+                                <span class="route-label">预计时间</span>
+                                <span class="route-value">约${approxTime}分钟</span>
+                            </div>
+                            <div class="route-item">
+                                <span class="route-label">直线距离</span>
+                                <span class="route-value">${straightDist}公里</span>
+                            </div>
+                            <div class="route-item">
+                                <span class="route-label">停车场</span>
+                                <span class="route-value">${destination.parking}</span>
+                            </div>
+                        `;
+                    }
                 }
-            }
-        );
-    } catch (e) {
-        console.error('路线规划失败:', e);
-        const straightDist = Math.round(haversineDistance(startLocation.lat, startLocation.lng, destination.lat, destination.lng) * 10) / 10;
-        document.getElementById('routeInfo').innerHTML = `
-            <div class="route-item">
-                <span class="route-label">直线距离</span>
-                <span class="route-value">${straightDist}公里</span>
-            </div>
-        `;
+            );
+        } catch (e) {
+            console.error('路线规划失败:', e);
+            const straightDist = Math.round(haversineDistance(startLocation.lat, startLocation.lng, destination.lat, destination.lng) * 10) / 10;
+            document.getElementById('routeInfo').innerHTML = `
+                <div class="route-item">
+                    <span class="route-label">直线距离</span>
+                    <span class="route-value">${straightDist}公里</span>
+                </div>
+            `;
+        }
+        
+        // 聚焦到景点
+        setTimeout(() => {
+            map.setZoomAndCenter(14, new AMap.LngLat(destination.lng, destination.lat));
+        }, 500);
+        
+    } catch (error) {
+        console.error('地图更新失败:', error);
     }
-    
-    // 聚焦到景点
-    setTimeout(() => {
-        map.setZoomAndCenter(14, new AMap.LngLat(destination.lng, destination.lat));
-    }, 500);
 }
 
 function addMarker(lng, lat, title, type) {
@@ -1109,6 +1142,35 @@ function showLoading(show, message = '加载中...') {
     const overlay = document.getElementById('loadingOverlay');
     overlay.style.display = show ? 'flex' : 'none';
     document.getElementById('loadingText').textContent = message;
+}
+
+// ============ 天气查询（高德天气API） ============
+async function getWeather(city, date) {
+    const API_KEY = 'b2831541728b9a9c50485e035d8a3516';
+    
+    try {
+        // 根据城市名获取天气
+        const response = await fetch(
+            `https://restapi.amap.com/v3/weather/weatherInfo?key=${API_KEY}&city=110000&extensions=all`
+        );
+        
+        const data = await response.json();
+        
+        if (data.status === '1' && data.lives && data.lives.length > 0) {
+            const weather = data.lives[0];
+            return {
+                weather: weather.weather,
+                temperature: weather.temperature,
+                winddirection: weather.winddirection,
+                windpower: weather.windpower,
+                reporttime: weather.reporttime
+            };
+        }
+        return null;
+    } catch (error) {
+        console.error('天气查询失败:', error);
+        return null;
+    }
 }
 
 // ============ 更新分享内容 ============
