@@ -1181,13 +1181,25 @@ function copyToClipboard(text, label) {
 
 // ============ 页面加载 ============
 function init() {
-    console.log('🚀 初始化周末出游规划助手...');
+    console.log('🚀 周末出游规划助手启动...');
     
     // 延迟初始化，确保DOM完全加载
     setTimeout(() => {
-        initMap();
-        setupEventListeners();
-        displayAttractionGallery();
+        try {
+            console.log('🔧 初始化地图...');
+            initMap();
+            
+            console.log('🔧 设置事件监听器...');
+            setupEventListeners();
+            
+            console.log('🔧 显示景点画廊...');
+            displayAttractionGallery();
+            
+            console.log('✅ 初始化完成！');
+        } catch (error) {
+            console.error('❌ 初始化失败:', error);
+            alert('页面初始化失败：' + error.message);
+        }
     }, 100);
 }
 
